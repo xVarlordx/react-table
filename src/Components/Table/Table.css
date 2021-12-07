@@ -1,0 +1,20 @@
+.table {
+    width: 720px;
+    margin: 30px auto;
+}
+
+.table_header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.table_header_item {
+    padding: 5px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.table_header_item:hover {
+    font-weight: bold;
+    transition: all 5ms;
+}
