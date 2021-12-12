@@ -1,0 +1,10 @@
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+}
+
+.cell {
+    padding: 5px;
+    border: 1px solid black;
+}
