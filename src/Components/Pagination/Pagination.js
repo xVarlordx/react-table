@@ -8,12 +8,18 @@ const Pagination = (props) => {
         pageNumbers.push(i)
     }
 
+    const handleClick = (number) => {
+        return () => {
+            props.paginate(number)
+        }
+    }
+
     return(
         <div>
             <ul className="pagination">
                 {pageNumbers.map(number =>
-                    <li className='page-item' key={number}>
-                        <a onClick={() => props.paginate(number)} href="!#" className='page-link'>{number}</a>
+                    <li onClick={handleClick(number)} className='page-item' key={number}>
+                        <div className='page-link'>{number}</div>
                     </li>
                 )}
             </ul>

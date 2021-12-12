@@ -1,9 +1,8 @@
 import React from "react";
-import {useEffect} from "react";
 import {useState} from "react";
-import './Table.css'
 import Row from '../Row/Row'
 import Pagination from "../Pagination/Pagination";
+import './Table.css'
 
 
 const Table = () => {
@@ -24,66 +23,79 @@ const Table = () => {
         {id: 14, name: 'Mark', power: 320, status: 'off'},
         {id: 15, name: 'Greta', power: 150, status: 'off'},
     ])
-
+    const [sortedHeroes, setSortedHeroes] = useState([...heroes])
+    const [sortOrder, setSortOrder] = useState('ascending')
     const [currentPage, setCurrentPage] = useState(1)
-    const [rowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     const lastRowIndex = currentPage * rowsPerPage
     const firstRowIndex = lastRowIndex - rowsPerPage
-    const currentRow = heroes.slice(firstRowIndex, lastRowIndex)
-
+    const currentRow = sortedHeroes.slice(firstRowIndex, lastRowIndex)
     const paginate = pageNumber => setCurrentPage(pageNumber)
 
-    const copyHeroes = heroes.concat()
-
-    // const [sort, setSort] = useState(0)
-
-    // const handlePowerSort = () => {
-    //     if (sort < 2) {
-    //         setSort(sort + 1)
-    //     } else {setSort(0)}
+    // const [sortConfig, setSortConfig] = useState(null)
+    //
+    // const requestSort = key => {
+    //     let direction = 'ascending';
+    //     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+    //         direction = 'descending';
+    //     } else if (sortConfig && sortConfig.key === key && sortConfig.direction === 'descending') {
+    //         direction = 'normal';
+    //     }
+    //     setSortConfig({ key, direction });
+    // }
+    //
+    // if (sortConfig !== null) {
+    //     sortedHeroes.sort((a, b) => {
+    //         if (a[sortConfig.key] < b[sortConfig.key]) {
+    //             return sortConfig.direction === 'ascending' ? -1 : 1;
+    //         }
+    //         if (a[sortConfig.key] > b[sortConfig.key]) {
+    //             return sortConfig.direction === 'ascending' ? 1 : -1;
+    //         }
+    //         return 0;
+    //     });
     // }
 
-    const handleSort = (field) => {
-        if (field !== 'name') {
-            copyHeroes.sort((a, b) => a[field] - b[field])
-            console.log(copyHeroes)
-        } else {
-            copyHeroes.sort((a, b) => {
-                let nameA = a.name.toLowerCase()
-                let nameB = b.name.toLowerCase()
-                if (nameA < nameB)
-                    return -1
-                if (nameA > nameB)
-                    return 1
-                return 0
-            } )
-            console.log(copyHeroes)
+    const sorting = (field) => {
+        if (sortOrder === 'ascending') {
+            const sorted = [...heroes].sort((a, b) =>
+            a[field] > b[field] ? 1 : -1
+            );
+            setSortedHeroes(sorted);
+            setSortOrder('descending')
+        }
+        if (sortOrder === 'descending') {
+            const sorted = [...heroes].sort((a, b) =>
+                a[field] < b[field] ? 1 : -1
+            );
+            setSortedHeroes(sorted);
+            setSortOrder('default')
+        }
+        if (sortOrder === 'default') {
+            const sorted = [...heroes].sort((a, b) =>
+                a[field] < b[field] ? 1 : -1
+            );
+            setSortedHeroes(heroes);
+            setSortOrder('ascending')
         }
     }
-
-
-    // useEffect(() => {
-    //     if(sort === 1) {
-    //         setHeroes(copyHeroes.sort((a, b) => parseFloat(a.power) - parseFloat(b.power)))
-    //     } else if (sort === 2) {
-    //         setHeroes(copyHeroes.sort((a, b) => parseFloat(b.power) - parseFloat(a.power)))
-    //     } else {
-    //         setHeroes(heroes)
-    //     }
-    // }, [sort]);
-
-
+    const handleSort = field => {
+        return () => {
+            sorting(field)
+        }
+    }
 
     return (
         <div className='table'>
             <div className='table_header'>
-                <div className="table_header_item" onClick={() => handleSort('id')}>Number</div>
-                <div className="table_header_item" onClick={() => handleSort('name')}>Name</div>
-                <div className="table_header_item" onClick={() => handleSort('power')}>Power</div>
-                <div className="table_header_item" onClick={() => handleSort('status')}>Status</div>
+                <div className="table_header_item" onClick={handleSort('id')}>Number</div>
+                <div className="table_header_item" onClick={handleSort('name')}>Name</div>
+                <div className="table_header_item" onClick={handleSort('power')}>Power</div>
+                <div className="table_header_item" onClick={handleSort('status')}>Status</div>
             </div>
-            {currentRow.map((hero, index) => <Row hero = {hero} key={index}/>)}
+
+            {currentRow.map((hero, index) => <Row hero={hero} key={index}/>)}
 
             <Pagination
                 rowsPerPage = {rowsPerPage}
